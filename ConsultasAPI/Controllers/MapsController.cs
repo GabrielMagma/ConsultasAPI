@@ -2,6 +2,7 @@
 using ConsultaAPI.Services.Interfaces;
 using ConsultaAPI.Services.Responses;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConsultasAPI.Controllers
 {
@@ -23,6 +24,18 @@ namespace ConsultasAPI.Controllers
             {
                 ResponseEntity<Compensation> response = new ResponseEntity<Compensation>();
                 mapsServices.GetCompensation(id, response);
+                return Ok(response);
+            });
+        }
+
+        [HttpGet]
+        [Route(nameof(MapsController.GetCompensationData))]
+        public async Task<IActionResult> GetCompensationData(CompensationDTO request)
+        {
+            return await Task.Run(() =>
+            {
+                ResponseEntity<List<CompensationDTO>> response = new ResponseEntity<List<CompensationDTO>>();
+                mapsServices.GetCompensationData(request, response);
                 return Ok(response);
             });
         }
@@ -63,5 +76,52 @@ namespace ConsultasAPI.Controllers
             });
         }
 
+        //[HttpPost]
+        //public async Task<IActionResult> GetTransformer([FromBody] FilterGeodata filter)
+        //{
+        //    try
+        //    {
+
+        //        var codeSigsQuery = _context.CregDius
+        //              .AsNoTracking()
+        //              .Where(x => x.NameRegion.Equals(filter.Region)
+        //                          && filter.Circuits.Contains(x.Fparent)
+        //                          && x.Year == filter.Year
+        //                          && x.Month == filter.Month)
+        //              .Select(x => new { x.CodeSig, x.Diu });
+
+        //        var transformers = await _context.AllAssets
+        //                                .AsNoTracking()
+        //                                .Where(asset => codeSigsQuery.Any(codeSig => codeSig.CodeSig == asset.CodeSig))
+        //                                .Select(asset => new
+        //                                {
+        //                                    latitude = asset.Latitude,
+        //                                    longitude = asset.Longitude,
+        //                                    codeSig = asset.CodeSig,
+        //                                    install = asset.DateInst,
+        //                                    uia = asset.Uia,
+        //                                    diu = codeSigsQuery
+        //                                        .Where(codeSig => codeSig.CodeSig == asset.CodeSig)
+        //                                        .Select(codeSig => codeSig.Diu)
+        //                                        .FirstOrDefault()
+        //                                }).ToListAsync();
+
+
+
+        //        return Ok(transformers);
+        //    }
+        //    catch (FormatException ex)
+        //    {
+        //        return Json(new { success = false, errorMessage = $"Error al procesar: {ex.Message}" });
+        //    }
+        //    catch (SqliteException ex)
+        //    {
+        //        return Json(new { success = false, errorMessage = $"Error al procesar: {ex.Message}" });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, errorMessage = $"Error al procesar: {ex.Message}" });
+        //    }
+        //}
     }
 }

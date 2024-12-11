@@ -7,6 +7,8 @@ namespace ConsultaAPI.Services.Interfaces
     {
         public ResponseEntity<Compensation> GetCompensation(int id, ResponseEntity<Compensation> response);
 
+        public ResponseEntity<List<CompensationDTO>> GetCompensationData(CompensationDTO request, ResponseEntity<List<CompensationDTO>> response);
+
         public ResponseEntity<MpLightning> GetMPLightning(int id, ResponseEntity<MpLightning> response);
 
         public ResponseEntity<MpTransformerBurned> GetMPTransformerBurned(int id, ResponseEntity<MpTransformerBurned> response);

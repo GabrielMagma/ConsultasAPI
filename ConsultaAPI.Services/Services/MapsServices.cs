@@ -3,6 +3,7 @@
 using ConsultaAPI.Services.Data;
 using ConsultaAPI.Services.Interfaces;
 using ConsultaAPI.Services.Responses;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
 namespace ConsultaAPI.Services.Services
@@ -23,6 +24,46 @@ namespace ConsultaAPI.Services.Services
             response.Message = "complete";            
             response.Success = true;
             return response;
+
+        }
+
+        public ResponseEntity<List<CompensationDTO>> GetCompensationData(CompensationDTO request, ResponseEntity<List<CompensationDTO>> response)
+        {
+            try
+            {
+                var Temp = context.Compensations
+                      .AsNoTracking()
+                      .Where(x => request.Fparent.Contains(x.Fparent)
+                                  && x.Year == request.Year
+                                  && request.Month.Contains(x.Month))
+                      .Select(x => new {x.Fparent, x.Year, x.Month, x.CodeSig, x.Vcf, x.Vcd, x.Latitude, x.Longitude });
+                
+                var CompensacionesDTOList = new List<CompensationDTO>();
+                foreach (var item in Temp) {
+                    var CompensacionesDTOTemp = new CompensationDTO();
+                    CompensacionesDTOTemp.FparentUnit = item.Fparent;
+                    CompensacionesDTOTemp.Year = item.Year;
+                    CompensacionesDTOTemp.MonthUnit = item.Month;
+                    CompensacionesDTOTemp.CodeSig = item.CodeSig;
+                    CompensacionesDTOTemp.Vcf = item.Vcf;
+                    CompensacionesDTOTemp.Vcd = item.Vcd;
+                    CompensacionesDTOTemp.Latitude = item.Latitude;
+                    CompensacionesDTOTemp.Longitude = item.Longitude;
+                    CompensacionesDTOList.Add(CompensacionesDTOTemp);
+                }
+                response.Data = CompensacionesDTOList;
+                response.Message = "complete";
+                response.Success = true;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Data = new List<CompensationDTO>();
+                response.Message = ex.Message;
+                response.Success = false;
+                return response;
+            }
+
 
         }
 
