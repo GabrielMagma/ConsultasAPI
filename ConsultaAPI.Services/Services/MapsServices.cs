@@ -60,11 +60,10 @@ namespace ConsultaAPI.Services.Services
                 }
                 var tempListCompensaciones = new List<CompensationDTO>();
 
-                var fparent = string.Empty;
-                float? suma1 = 0;
-                float? suma2 = 0;
                 foreach (var item in FparentList)
                 {
+                    float? suma1 = 0;
+                    float? suma2 = 0;
                     var filteredListCompensaciones = CompensacionesDTOList.Where(x => x.FparentUnit == item).ToList();
                     foreach (var item2 in filteredListCompensaciones)
                     {
