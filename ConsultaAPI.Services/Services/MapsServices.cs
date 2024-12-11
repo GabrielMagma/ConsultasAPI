@@ -51,7 +51,38 @@ namespace ConsultaAPI.Services.Services
                     CompensacionesDTOTemp.Longitude = item.Longitude;
                     CompensacionesDTOList.Add(CompensacionesDTOTemp);
                 }
-                response.Data = CompensacionesDTOList;
+                var FparentList = new List<string>();
+                foreach (var item in CompensacionesDTOList) { 
+                    if (!FparentList.Contains(item.FparentUnit))
+                    {
+                        FparentList.Add(item.FparentUnit);
+                    }
+                }
+                var tempListCompensaciones = new List<CompensationDTO>();
+
+                var fparent = string.Empty;
+                float? suma1 = 0;
+                float? suma2 = 0;
+                foreach (var item in FparentList)
+                {
+                    var filteredListCompensaciones = CompensacionesDTOList.Where(x => x.FparentUnit == item).ToList();
+                    foreach (var item2 in filteredListCompensaciones)
+                    {
+                        suma1 = suma1 + item2.Vcf;
+                        suma2 = suma2 + item2.Vcd;
+                    }
+                    var tempUnitCompensaciones = new CompensationDTO();
+                    tempUnitCompensaciones.FparentUnit = filteredListCompensaciones[0].FparentUnit;
+                    tempUnitCompensaciones.Year = filteredListCompensaciones[0].Year;
+                    tempUnitCompensaciones.MonthUnit = filteredListCompensaciones[0].MonthUnit;
+                    tempUnitCompensaciones.CodeSig = filteredListCompensaciones[0].CodeSig;
+                    tempUnitCompensaciones.Vcf = suma1;
+                    tempUnitCompensaciones.Vcd = suma2;
+                    tempUnitCompensaciones.Latitude = filteredListCompensaciones[0].Latitude;
+                    tempUnitCompensaciones.Longitude = filteredListCompensaciones[0].Longitude;
+                    tempListCompensaciones.Add(tempUnitCompensaciones);
+                }
+                response.Data = tempListCompensaciones;
                 response.Message = "complete";
                 response.Success = true;
                 return response;
